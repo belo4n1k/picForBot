@@ -48,53 +48,33 @@ namespace TGBot
 
          
          messageText = messageText.ToLower();
+
+         Message sentMessage;
+         switch (messageText)
+         {
+            case "привет" :
+               MessagesCase("ну здарова", botClient, update, cancellationToken);
+               break;
+            case "как дела?" :  
+               MessagesCase("я норм, ты как?", botClient, update, cancellationToken);
+               break;
+            case "га" :  
+               MessagesPhoto("не дразни гуся", botClient, update, cancellationToken);
+               break;
+            case "покажи гуся" :
+               Random rnd = new Random();
+               int num = rnd.Next(1, 4);
+               Message message = await botClient.SendPhotoAsync(
+                  chatId: chatId,
+                  photo:$"https://github.com/belo4n1k/picForBot/blob/main/pics/{num}.jpg?raw=true",
+                  caption: "<b>Вот</b>.",
+                  parseMode: ParseMode.Html,
+                  cancellationToken: cancellationToken);
+               break;
+            default:
+               MessagesCase("га!", botClient, update, cancellationToken);
+               break;
          
-
-         if (messageText.Contains("привет"))
-         {
-            string text = "ну здарова";
-            Message sentMessage = await botClient.SendTextMessageAsync(
-               chatId: chatId,
-               text: text ,
-               cancellationToken: cancellationToken);
-         }
-
-         else if (messageText.Contains("как дела"))
-         {
-            string text = "я норм, сам как?";
-            Message sentMessage = await botClient.SendTextMessageAsync(
-               chatId: chatId,
-               text: text ,
-               cancellationToken: cancellationToken);
-         }
-
-         else if (messageText.Contains("хорош") || messageText.Contains("норм"))
-         {
-            string text = "вот и ладненько";
-            Message sentMessage = await botClient.SendTextMessageAsync(
-               chatId: chatId,
-               text: text ,
-               cancellationToken: cancellationToken);
-         }
-         else if (messageText.Contains("гуся"))
-         {
-            Random rnd = new Random();
-            int num = rnd.Next(1, 4);
-            Console.WriteLine();
-            Message message = await botClient.SendPhotoAsync(
-               chatId: chatId,
-               photo:$"https://github.com/belo4n1k/picForBot/blob/main/pics/{num}.jpg?raw=true",
-               caption: "<b>Вот</b>.",
-               parseMode: ParseMode.Html,
-               cancellationToken: cancellationToken);
-         }
-         else
-         {
-            string text = "га!";
-            Message sentMessage = await botClient.SendTextMessageAsync(
-               chatId: chatId,
-               text: text ,
-               cancellationToken: cancellationToken);
          }
       }
 
@@ -110,6 +90,23 @@ namespace TGBot
          Console.WriteLine(ErrorMessage);
          return Task.CompletedTask;
       }
-      
+
+      private static async Task MessagesCase(string text, ITelegramBotClient botClient , Update  chatId, CancellationToken cancellationToken)
+      {
+         Message sentMessage = await botClient.SendTextMessageAsync(
+            chatId: chatId.Message.Chat.Id,
+            text: text ,
+            cancellationToken: cancellationToken);
+      }
+
+      private static async Task MessagesPhoto(string text, ITelegramBotClient botClient, Update chatId, CancellationToken cancellationToken)
+      {
+         Message message = await botClient.SendPhotoAsync(
+            chatId: chatId.Message.Chat.Id,
+            photo:$"https://github.com/belo4n1k/picForBot/blob/main/pics/ga.jpg?raw=true",
+            caption: text,
+            parseMode: ParseMode.Html,
+            cancellationToken: cancellationToken);
+      }
    }
 }
