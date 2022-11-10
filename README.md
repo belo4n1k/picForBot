@@ -1,1 +1,2 @@
 # picForBot
+Bot for telegram
